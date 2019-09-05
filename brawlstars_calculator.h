@@ -1,6 +1,17 @@
 #ifndef BRAWLSTARS_CALC_H
 #define BRAWLSTARS_CALC_H
 
+#define PWR_PTS_LVL_1 0
+#define PWR_PTS_LVL_2 20
+#define PWR_PTS_LVL_3 30
+#define PWR_PTS_LVL_4 50
+#define PWR_PTS_LVL_5 80
+#define PWR_PTS_LVL_6 130
+#define PWR_PTS_LVL_7 210
+#define PWR_PTS_LVL_8 340
+#define PWR_PTS_LVL_9 550
+#define PWR_PTS_LVL_10 0
+
 /* structure definition(s) */
 struct brawler_t {
   // attribute(s)

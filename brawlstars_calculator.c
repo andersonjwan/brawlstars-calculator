@@ -31,23 +31,41 @@ int main(void) {
       break;
     case 'U': {
       const char brawler_name[16];
-      struct node * target_brawler;
+      struct node * target_node;
 
       printf("Brawler's Name: ");
       scanf("%s", brawler_name);
 
-      target_brawler = findBrawler(node_head, brawler_name);
+      target_node = findBrawler(node_head, brawler_name);
 
       // test for whether brawler exists
-      if(target_brawler != NULL) {
+      if(target_node != ((struct node *) 0)) {
         // brawler exists
-        printf("%s found...\n");
+        printf("%s found...\n", brawler_name);
         printf("Power Points Required: %d.\n",
-               powerPointsToLevel(target_brawler->brawler));
+               powerPointsToLevel(target_node->brawler));
       }
       else {
         // brawler does not exist
         printf("%s does not exists.\n", brawler_name);
+      }
+    }
+      break;
+    case 'M': {
+      const char brawler_name[16];
+      struct node * target_node;
+
+      printf("Brawler's Name: ");
+      scanf("%s", brawler_name);
+
+      target_node = findBrawler(node_head, brawler_name);
+
+      // test for whether brawler exists
+      if(target_node != ((struct node *) 0)) {
+        // brawler exists
+        printf("%s found...\n", brawler_name);
+        printf("Power Points Required to Max: %d.\n",
+               powerPointsToMax(target_node->brawler));
       }
     }
       break;
@@ -147,6 +165,9 @@ struct node * findBrawler(struct node * iter, const char target_name[]) {
       target = iter;
       break;
     }
+
+    // point to next node
+    iter = iter->next;
   }
 
   return target;
@@ -265,6 +286,7 @@ void printMenu(void) {
   printf("A: Add a new brawler.\n");
   printf("D: Display brawlers.\n");
   printf("U: Power Points required to next level.\n");
+  printf("M: Power Points required to max level.\n");
   printf("Q: Quit program.\n");
   printf("?: Print context menu.\n");
   printf("########################################\n");
