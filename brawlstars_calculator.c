@@ -193,16 +193,19 @@ struct brawler_t collectBrawlerInfo(void) {
   if(brawler_info.power_level == 10) {
     printf("%s's Star Power count: ", brawler_info.name);
     scanf("%d", &(brawler_info.star_powers));
+
+    // set power points to zero
+    brawler_info.power_points = 0;
   }
   else {
     // not level 10 brawler
     brawler_info.star_powers = 0;
-  }
 
-  // prompt brawler for power points to next level
-  // this value can be higher than needed for the next level
-  printf("%s's Power Points: ", brawler_info.name);
-  scanf("%d", &(brawler_info.power_points));
+    // prompt brawler for power points to next level
+    // this value can be higher than needed for the next level
+    printf("%s's Power Points: ", brawler_info.name);
+    scanf("%d", &(brawler_info.power_points));
+  }
 
   return brawler_info;
 }
