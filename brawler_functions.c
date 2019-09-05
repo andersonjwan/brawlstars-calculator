@@ -77,7 +77,8 @@ int powerPointsToMax(struct brawler_t * brawler) {
    * @return: Power Points to level 9.
    */
 
-  return calcPowerPointsCurr(PWR_PTS_LVL_10, 10) - calcPowerPointsCurr(brawler->power_points, brawler->power_level);
+  return calcPowerPointsCurr(PWR_PTS_LVL_10, 10) -
+    calcPowerPointsCurr(brawler->power_points, brawler->power_level);
 }
 
 
