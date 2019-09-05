@@ -21,6 +21,7 @@ struct node {
 /* forward declaration(s) */
 struct node * createList(struct node *);
 struct node * appendNode(struct node *);
+struct node * findBrawler(struct node *, const char []);
 struct brawler_t * createBrawler(struct brawler_t);
 struct brawler_t collectBrawlerInfo(void);
 void readLine(char []);

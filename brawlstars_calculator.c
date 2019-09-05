@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "brawlstars_calculator.h"
+#include "brawler_functions.h"
 
 int main(void) {
   struct node * node_head = ((struct node *) 0), * curr = ((struct node *) 0);
@@ -25,6 +26,28 @@ int main(void) {
       }
       else {
         curr = appendNode(node_head);
+      }
+    }
+      break;
+    case 'U': {
+      const char brawler_name[16];
+      struct node * target_brawler;
+
+      printf("Brawler's Name: ");
+      scanf("%s", brawler_name);
+
+      target_brawler = findBrawler(node_head, brawler_name);
+
+      // test for whether brawler exists
+      if(target_brawler != NULL) {
+        // brawler exists
+        printf("%s found...\n");
+        printf("Power Points Required: %d.\n",
+               powerPointsToLevel(target_brawler->brawler));
+      }
+      else {
+        // brawler does not exist
+        printf("%s does not exists.\n", brawler_name);
       }
     }
       break;
@@ -104,6 +127,29 @@ struct node * appendNode(struct node * iter) {
   }
 
   return new_node;
+}
+
+struct node * findBrawler(struct node * iter, const char target_name[]) {
+  /**
+   * findBrawler searches through the list linearly
+   * and returns a pointer to the brawler with a matching
+   * string.
+   * @param iter: Pointer to head of list.
+   * @param target_name: Brawler name to search.
+   * @return: Pointer to node with matching name.
+   */
+
+  struct node * target = ((struct node *) 0); // set to NULL
+
+  // iterate until brawler found
+  while(iter != NULL) {
+    if(strcmp(iter->brawler->name, target_name) == 0) {
+      target = iter;
+      break;
+    }
+  }
+
+  return target;
 }
 
 struct brawler_t * createBrawler(struct brawler_t brawler) {
@@ -214,7 +260,8 @@ void printMenu(void) {
 
   printf("########################################\n");
   printf("A: Add a new brawler.\n");
-  printf("D: Displays brawlers.\n");
+  printf("D: Display brawlers.\n");
+  printf("U: Power Points required to next level.\n");
   printf("Q: Quit program.\n");
   printf("?: Print context menu.\n");
   printf("########################################\n");
