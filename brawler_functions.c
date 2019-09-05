@@ -77,8 +77,7 @@ int powerPointsToMax(struct brawler_t * brawler) {
    * @return: Power Points to level 9.
    */
 
-  return (calcPowerPointsCurr(brawler->power_points, brawler->power_level) -
-          calcPowerPointsCurr(PWR_PTS_LVL_10, 10));
+  return calcPowerPointsCurr(PWR_PTS_LVL_10, 10) - calcPowerPointsCurr(brawler->power_points, brawler->power_level);
 }
 
 
@@ -114,32 +113,40 @@ int calcPowerPointsCurr(int brawler_pwr_pts, int brawler_lvl) {
    */
 
   int power_points_sum = 0;
+  int remaining_power_points;
 
-  switch(brawler_lvl) {
-  case 1:
+  if(brawler_lvl >= 1) {
     power_points_sum += PWR_PTS_LVL_1;
-  case 2:
-    power_points_sum += PWR_PTS_LVL_2;
-  case 3:
+  }
+  if(brawler_lvl >= 2) {
+    power_points_sum += PWR_PTS_LVL_2;;
+  }
+  if(brawler_lvl >= 3) {
     power_points_sum += PWR_PTS_LVL_3;
-  case 4:
+  }
+  if(brawler_lvl >= 4) {
     power_points_sum += PWR_PTS_LVL_4;
-  case 5:
+  }
+  if(brawler_lvl >= 5) {
     power_points_sum += PWR_PTS_LVL_5;
-  case 6:
+  }
+  if(brawler_lvl >= 6) {
     power_points_sum += PWR_PTS_LVL_6;
-  case 7:
+  }
+  if(brawler_lvl >= 7) {
     power_points_sum += PWR_PTS_LVL_7;
-  case 8:
+  }
+  if(brawler_lvl >= 8) {
     power_points_sum += PWR_PTS_LVL_8;
-  case 9:
+  }
+  if(brawler_lvl >= 9) {
     power_points_sum += PWR_PTS_LVL_9;
-  case 10:
+  }
+  if(brawler_lvl >= 10) {
     power_points_sum += PWR_PTS_LVL_10;
-  default:
-    power_points_sum += brawler_pwr_pts;
   }
 
+  power_points_sum += brawler_pwr_pts;
   return power_points_sum;
 }
 
@@ -153,35 +160,31 @@ int calcPotentialLevel(int brawler_pwr_pts, int brawler_lvl) {
    * @return: Brawler's potential level.
    */
 
-  int curr_pwr_pts = calcPowerPointsCurr(brawler_pwr_pts, brawler_lvl);
   int potential_level;
 
   // highest level to smallest level
-  if(curr_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_10, 10)) {
-    potential_level = 10;
-  }
-  else if(curr_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_9, 9)) {
+  if(brawler_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_9, 9)) {
     potential_level = 9;
   }
-  else if(curr_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_9, 8)) {
+  else if(brawler_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_9, 8)) {
     potential_level = 8;
   }
-  else if(curr_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_7, 7)) {
+  else if(brawler_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_7, 7)) {
     potential_level = 7;
   }
-  else if(curr_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_6, 6)) {
+  else if(brawler_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_6, 6)) {
     potential_level = 6;
   }
-  else if(curr_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_5, 5)) {
+  else if(brawler_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_5, 5)) {
     potential_level = 5;
   }
-  else if(curr_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_4, 4)) {
+  else if(brawler_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_4, 4)) {
     potential_level = 4;
   }
-  else if(curr_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_3, 3)) {
+  else if(brawler_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_3, 3)) {
     potential_level = 3;
   }
-  else if(curr_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_2, 2)) {
+  else if(brawler_pwr_pts >= calcPowerPointsCurr(PWR_PTS_LVL_2, 2)) {
     potential_level = 2;
   }
   else {
