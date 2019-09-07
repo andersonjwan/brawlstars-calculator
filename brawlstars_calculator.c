@@ -30,11 +30,11 @@ int main(void) {
     }
       break;
     case 'U': {
-      const char brawler_name[16];
+      char brawler_name[16];
       struct node * target_node;
 
       printf("Brawler's Name: ");
-      scanf("%s", brawler_name);
+      readLine(brawler_name);
 
       target_node = findBrawler(node_head, brawler_name);
 
@@ -80,6 +80,10 @@ int main(void) {
       break;
     case 'Q': {
       run = false;
+    }
+      break;
+    default: {
+      printf("Unknown option.\n");
     }
       break;
     }
@@ -203,8 +207,7 @@ struct brawler_t collectBrawlerInfo(void) {
 
   // prompt user for brawler name
   printf("Brawler's Name: ");
-  scanf("%s", brawler_info.name);
-  //readLine(brawler_info.name);
+  readLine(brawler_info.name);
 
   // prompt user for brawler power level
   printf("%s's Power Level: ", brawler_info.name);
@@ -242,6 +245,10 @@ void readLine(char buffer[]) {
   int i = 0;
   char character;
 
+  // clear the buffer
+  while((getchar()) != '\n');
+
+  // create name
   do {
     character = getchar();
     buffer[i] = character;
