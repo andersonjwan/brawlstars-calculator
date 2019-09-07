@@ -21,11 +21,11 @@ int main(void) {
     case 'A': {
       if(node_head == ((struct node *) 0)) {
         // create list head
-        node_head = createList(node_head);
+        node_head = createList(node_head, collectBrawlerInfo());
         curr = node_head;
       }
       else {
-        curr = appendNode(node_head);
+        curr = appendNode(node_head, collectBrawlerInfo());
       }
     }
       break;
@@ -74,6 +74,25 @@ int main(void) {
       printBrawlers(node_head);
     }
       break;
+    case 'S': {
+      // save brawler(s) and attribute(s) to file
+      if(writeBrawlers(node_head)) {
+        printf("Brawlers saved successfully.\n");
+      }
+      else {
+        printf("Error. Unable to save brawlers.\n");
+      }
+    }
+      break;
+    case 'L': {
+      // load brawler(s) and attribute(s) to list
+      if((node_head = readBrawlers(node_head))) {
+        printf("Brawlers successfully loaded.\n");
+      }
+      else {
+        printf("Brawlers unable to be loaded.\n");
+      }
+    }
     case '?': {
       printMenu();
     }
@@ -88,10 +107,19 @@ int main(void) {
       break;
     }
   }
+
+  // free memory
+  if(reallocateMem(node_head)) {
+    printf("Memory successefully cleared.\n");
+  }
+  else {
+    printf("Memory not clearned. Error.\n");
+  }
+
   return 0;
 }
 
-struct node * createList(struct node * iter) {
+struct node * createList(struct node * iter, struct brawler_t new_brawler) {
   /**
    * createList creates the first node of the list
    * and returns the pointer to be the head of the
@@ -110,7 +138,7 @@ struct node * createList(struct node * iter) {
     // test for allocation success/failure
     if(node_head != NULL) {
       // default values of node attribute(s)
-      node_head->brawler = createBrawler(collectBrawlerInfo());
+      node_head->brawler = createBrawler(new_brawler);
       node_head->next = ((struct node *) 0);
 
       // returns pointer to new node if created successfully
@@ -121,7 +149,7 @@ struct node * createList(struct node * iter) {
   return ((struct node *) 0); // fails to create head
 }
 
-struct node * appendNode(struct node * iter) {
+struct node * appendNode(struct node * iter, struct brawler_t new_brawler) {
   /**
    * appendNode inserts a new node at the end of the
    * list.
@@ -136,7 +164,7 @@ struct node * appendNode(struct node * iter) {
 
   if(new_node != NULL) {
     // default values of node attribute(s)
-    new_node->brawler = createBrawler(collectBrawlerInfo());
+    new_node->brawler = createBrawler(new_brawler);
     new_node->next = ((struct node *) 0);
 
     // traverse to end of list
@@ -260,6 +288,36 @@ void readLine(char buffer[]) {
   buffer[i - 1] = '\0';
 }
 
+bool reallocateMem(struct node * iter) {
+  /** reallocateMem re-allocates the memory
+   * of the pointers and structures created.
+   *
+   * @param iter: Pointer to head of list.
+   */
+
+  struct node * temp_iter;
+
+  while(iter != NULL) {
+    // set temp_iter
+    temp_iter = iter;
+
+    // free brawler_t structure
+    free(temp_iter->brawler);
+
+    // point to next node
+    iter = iter->next;
+
+    // free previous node structure
+    free(temp_iter);
+  }
+
+  if(iter != NULL) {
+    return false;
+  }
+
+  return true;
+}
+
 void printBrawlers(struct node * iter) {
   /**
    * printBrawlers displays all brawlers in the
@@ -267,6 +325,9 @@ void printBrawlers(struct node * iter) {
    *
    * @param node_head: Pointer to beginning of list.
    */
+
+  // line break segment
+  printf("--------------------\n");
 
   if(iter == ((struct node *) 0)) {
     printf("No brawlers added.\n");
@@ -277,11 +338,95 @@ void printBrawlers(struct node * iter) {
       printf("Power Level: %d\n", iter->brawler->power_level);
       printf("Star Power(s): %d\n", iter->brawler->star_powers);
       printf("Power Point(s): %d\n", iter->brawler->power_points);
-      printf("-----\n");
+      printf("--------------------\n");
 
       iter = iter->next;
     }
   }
+}
+
+bool writeBrawlers(struct node * iter) {
+  /**
+   * writeBrawlers writes the brawlers and their
+   * associated attributes to a file labeled
+   * 'brawlers-info.txt'.
+   */
+
+  // create file
+  FILE * output_file;
+
+  // open file
+  if((output_file = fopen("brawlers-info.txt", "w")) == NULL) {
+    fprintf(stderr, "Unable to open 'brawlers-info.txt'\n");
+    return false;
+  }
+
+  // write data to file
+  while(iter != NULL) {
+    // write brawler name
+    fprintf(output_file, "%s", iter->brawler->name);
+    // write delimiter
+    fprintf(output_file, ":");
+
+    // write brawler power level
+    fprintf(output_file, "%d", iter->brawler->power_level);
+    fprintf(output_file, ":");
+
+    // write brawler star power count
+    fprintf(output_file, "%d", iter->brawler->star_powers);
+    fprintf(output_file, ":");
+
+    // write brawler power points
+    fprintf(output_file, "%d", iter->brawler->power_points);
+    fprintf(output_file, "\n");
+
+    // point to next node
+    iter = iter->next;
+  }
+
+  // close file
+  fclose(output_file);
+
+  return true;
+}
+
+struct node * readBrawlers(struct node * iter) {
+  /**
+   * readBrawlers reads the brawlers and their
+   * associated attributes from a file to a list
+   */
+
+  // create file
+  FILE * input_file;
+
+  // open file
+  if((input_file = fopen("brawlers-info.txt", "r")) == NULL) {
+    fprintf(stderr, "Unable to open 'brawlers-info.txt'. Check that the file exists.\n");
+    return false;
+  }
+
+  struct brawler_t temp_brawler;
+
+  // read data into list
+  while(!feof(input_file)) {
+    // read attributes
+    fscanf(input_file, "%s :%d:%d:%d", temp_brawler.name,
+           &(temp_brawler.power_level), &(temp_brawler.star_powers),
+           &(temp_brawler.power_points));
+
+    // create new brawler
+    if(iter == ((struct node *) 0)) {
+      iter = createList(iter, temp_brawler);
+    }
+    else {
+      appendNode(iter, temp_brawler);
+    }
+  }
+
+  // close file
+  fclose(input_file);
+
+  return iter;
 }
 
 void printMenu(void) {
@@ -294,6 +439,8 @@ void printMenu(void) {
   printf("D: Display brawlers.\n");
   printf("U: Power Points required to next level.\n");
   printf("M: Power Points required to max level.\n");
+  printf("S: Save added brawlers to a file.\n");
+  printf("L: Load brawlers from file.\n");
   printf("Q: Quit program.\n");
   printf("?: Print context menu.\n");
   printf("########################################\n");

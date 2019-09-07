@@ -12,6 +12,8 @@
 #define PWR_PTS_LVL_9 550
 #define PWR_PTS_LVL_10 0
 
+#include <stdbool.h>
+
 /* structure definition(s) */
 struct brawler_t {
   // attribute(s)
@@ -30,12 +32,15 @@ struct node {
 };
 
 /* forward declaration(s) */
-struct node * createList(struct node *);
-struct node * appendNode(struct node *);
+struct node * createList(struct node *, struct brawler_t);
+struct node * appendNode(struct node *, struct brawler_t);
 struct node * findBrawler(struct node *, const char []);
 struct brawler_t * createBrawler(struct brawler_t);
 struct brawler_t collectBrawlerInfo(void);
+bool reallocateMem(struct node * iter);
 void readLine(char []);
 void printBrawlers(struct node *);
 void printMenu(void);
+bool writeBrawlers(struct node *);
+struct node * readBrawlers(struct node *);
 #endif
