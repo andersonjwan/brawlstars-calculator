@@ -350,6 +350,9 @@ bool writeBrawlers(struct node * iter) {
    * writeBrawlers writes the brawlers and their
    * associated attributes to a file labeled
    * 'brawlers-info.txt'.
+   *
+   * @param iter: Pointer to head of list.
+   * @return: Writing success/failure.
    */
 
   // create file
@@ -364,7 +367,7 @@ bool writeBrawlers(struct node * iter) {
   // write data to file
   while(iter != NULL) {
     // write brawler name
-    fprintf(output_file, "%s", iter->brawler->name);
+    fprintf(output_file, "%s ", iter->brawler->name);
     // write delimiter
     fprintf(output_file, ":");
 
@@ -394,6 +397,9 @@ struct node * readBrawlers(struct node * iter) {
   /**
    * readBrawlers reads the brawlers and their
    * associated attributes from a file to a list
+   *
+   * @param iter: Pointer to head of list.
+   * @return: Pointer to head of list.
    */
 
   // create file
@@ -409,10 +415,8 @@ struct node * readBrawlers(struct node * iter) {
 
   // read data into list
   while(!feof(input_file)) {
-    // read attributes
-    fscanf(input_file, "%s :%d:%d:%d", temp_brawler.name,
-           &(temp_brawler.power_level), &(temp_brawler.star_powers),
-           &(temp_brawler.power_points));
+    fscanf(input_file, "%s :%d:%d:%d", temp_brawler.name, &(temp_brawler.power_level),
+           &(temp_brawler.star_powers), &(temp_brawler.power_points));
 
     // create new brawler
     if(iter == ((struct node *) 0)) {
