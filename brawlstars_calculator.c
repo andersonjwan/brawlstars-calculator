@@ -355,21 +355,26 @@ bool writeBrawlers(struct node * iter) {
    * @return: Writing success/failure.
    */
 
+  char file_name[80];
+
+  // prompt for file to open
+  printf("Save As: ");
+  scanf("%s", file_name);
+
   // create file
   FILE * output_file;
 
   // open file
-  if((output_file = fopen("brawlers-info.txt", "w")) == NULL) {
-    fprintf(stderr, "Unable to open 'brawlers-info.txt'\n");
+  if((output_file = fopen(file_name, "w")) == NULL) {
+    fprintf(stderr, "Unable to open '%s'\n", file_name);
     return false;
   }
 
   // write data to file
   while(iter != NULL) {
     // write brawler name
-    fprintf(output_file, "%s ", iter->brawler->name);
-    // write delimiter
-    fprintf(output_file, ":");
+    fprintf(output_file, "%s", iter->brawler->name);
+    fprintf(output_file, ":"); // delimeter
 
     // write brawler power level
     fprintf(output_file, "%d", iter->brawler->power_level);
@@ -402,35 +407,133 @@ struct node * readBrawlers(struct node * iter) {
    * @return: Pointer to head of list.
    */
 
+  char file_name[80];
+
+  // prompt for file to open
+  printf("Open: ");
+  scanf("%d", file_name);
   // create file
   FILE * input_file;
 
   // open file
-  if((input_file = fopen("brawlers-info.txt", "r")) == NULL) {
-    fprintf(stderr, "Unable to open 'brawlers-info.txt'. Check that the file exists.\n");
+  if((input_file = fopen(file_name, "r")) == NULL) {
+    fprintf(stderr, "Unable to open '%s'.\n", file_name);
     return false;
   }
 
   struct brawler_t temp_brawler;
 
-  // read data into list
-  while(!feof(input_file)) {
-    fscanf(input_file, "%s :%d:%d:%d", temp_brawler.name, &(temp_brawler.power_level),
-           &(temp_brawler.star_powers), &(temp_brawler.power_points));
+  // read data into buffer
+  char character, * buffer;
+  int i;
 
-    // create new brawler
-    if(iter == ((struct node *) 0)) {
-      iter = createList(iter, temp_brawler);
+  do {
+    // new buffer to be allocated
+    buffer = (char *) malloc(80 * sizeof(char));
+    i = 0;
+
+    do {
+      // read character
+      character = getc(input_file);
+
+      if(character == '\n') {
+        // append null character to buffer
+        buffer[i] = '\0';
+      }
+      else if(character != ':') {
+        // append character to buffer
+        *(buffer + i) = character;
+        ++i;
+      }
+
+      // test for read line
+      if(buffer[i] == '\0') {
+        // create brawler with information in buffer
+        char temp_name[16], temp_level[16];
+        char temp_star[16], temp_points[16];
+
+        // parse brawler attribute(s)
+        parseBrawler(buffer, temp_name,
+                     temp_level, temp_star, temp_points);
+
+        // create new brawler
+        struct brawler_t new_brawler;
+
+        // set attribute(s)
+        strcpy(new_brawler.name, temp_name);
+
+        // convert strings to integers
+        if(iter == ((struct node *) 0)) {
+          iter = createList(iter,)
+        }
+      }
     }
-    else {
-      appendNode(iter, temp_brawler);
-    }
+    while(character != '\n' && character != EOF);
   }
-
+  while(character != EOF);
   // close file
   fclose(input_file);
 
   return iter;
+}
+
+void parseBrawler(char * buffer, char * temp_name, char * temp_level,
+                  char * temp_star, char * temp_points) {
+  /**
+   * parseBrawler parses a brawler buffer into its
+   * appropriate information using the ':' as the delimeter.
+   *
+   * @param buffer: Buffer with brawler attribute(s).
+   * @param temp_name: Brawler name.
+   * @param temp_level: Brawler level.
+   * @param temp_star: Brawler Star Power count.
+   * @param temp_points: Brawler Power Points.
+   */
+
+  char character;
+  int i = 0, ii = 0, delimeter_count = 0;
+
+  do {
+    character = *(buffer + i);
+
+    if(character == ':') {
+      ++delimeter_count;
+
+      // reset index
+      i = 0;
+    }
+
+    switch(delimeter_count) {
+    case 0: {
+      // reading brawler name
+      *(temp_name + ii) = character;
+      ++ii;
+    }
+      break;
+    case 1: {
+      // reading brawler level
+      *(temp_level + ii) = character;
+      ++ii;
+    }
+      break;
+    case 2: {
+      // reading brawler star power
+      *(temp_star + ii) = character;
+      ++ii;
+    }
+      break;
+    case 3: {
+      // reading brawler power points
+      *(temp_points ++ ii) = character;
+      ++ii;
+    }
+      break;
+    }
+
+    // increment to next character in buffer
+    ++i;
+  }
+  while(character != '\0');
 }
 
 void printMenu(void) {
