@@ -39,6 +39,7 @@ struct brawler_t * createBrawler(struct brawler_t);
 struct brawler_t collectBrawlerInfo(void);
 bool reallocateMem(struct node * iter);
 void readLine(char []);
+void parseBrawler(char *, char *, char *, char *, char *);
 void printBrawlers(struct node *);
 void printMenu(void);
 bool writeBrawlers(struct node *);
