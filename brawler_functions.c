@@ -56,15 +56,13 @@ int powerPointsToLevel(struct brawler_t * brawler) {
     rem_pwr_pts = calcPowerPointsToLevel(brawler_pwr_pts, PWR_PTS_LVL_10);
   }
     break;
-  case 10: {
-    rem_pwr_pts = -2; // star power(s) gained level
-  }
-    break;
   default: {
-    return -3;
+    rem_pwr_pts = 0;
   }
     break;
   }
+
+  return rem_pwr_pts;
 }
 
 int powerPointsToMax(struct brawler_t * brawler) {
