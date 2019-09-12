@@ -1,0 +1,5 @@
+# Executable(s)
+*.out
+
+# Input(s)
+*.txt
