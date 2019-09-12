@@ -8,7 +8,7 @@
 int main(void) {
   struct node * node_head = ((struct node *) 0), * curr = ((struct node *) 0);
   char choice;
-  bool run = true;
+  bool run = true, all_brawlers = false;
 
   printMenu();
 
@@ -19,84 +19,176 @@ int main(void) {
 
     switch(choice) {
     case 'A': {
-      if(node_head == ((struct node *) 0)) {
-        // create list head
-        node_head = createList(node_head, collectBrawlerInfo());
-        curr = node_head;
+      if(all_brawlers) {
+        printf("All brawler action not applicable.\n");
       }
       else {
-        curr = appendNode(node_head, collectBrawlerInfo());
-      }
-    }
-      break;
-    case 'U': {
-      char brawler_name[16];
-      struct node * target_node;
+        if(node_head == ((struct node *) 0)) {
+          // create list head
+          node_head = createList(node_head, collectBrawlerInfo());
+          curr = node_head;
+        }
+        else {
+          curr = appendNode(node_head, collectBrawlerInfo());
+        }
 
-      printf("Brawler's Name: ");
-      readLine(brawler_name);
-
-      target_node = findBrawler(node_head, brawler_name);
-
-      // test for whether brawler exists
-      if(target_node != ((struct node *) 0)) {
-        // brawler exists
-        printf("Power Points Required: %d.\n",
-               powerPointsToLevel(target_node->brawler));
-        printf("Coins Required: %d.\n",
-               coinsToLevel(target_node->brawler));
-      }
-      else {
-        // brawler does not exist
-        printf("%s does not exists.\n", brawler_name);
-      }
-    }
-      break;
-    case 'M': {
-      const char brawler_name[16];
-      struct node * target_node;
-
-      printf("Brawler's Name: ");
-      scanf("%s", brawler_name);
-
-      target_node = findBrawler(node_head, brawler_name);
-
-      // test for whether brawler exists
-      if(target_node != ((struct node *) 0)) {
-        // brawler exists
-        printf("Power Points Required to Max: %d.\n",
-               powerPointsToMax(target_node->brawler));
-        printf("Coins Required to Max: %d.\n",
-               coinsToMax(target_node->brawler));
+        all_brawlers = false;
       }
     }
       break;
     case 'D': {
       // display brawler(s)
-      printBrawlers(node_head);
+      if(all_brawlers) {
+        if(node_head != ((struct node *) 0)) {
+          printBrawlers(node_head, printBrawler);
+        }
+        else {
+          printf("No brawler's added.\n");
+        }
+      }
+      else {
+        char brawler_name[16];
+        struct node * target_node;
+
+        printf("Brawler's Name: ");
+        readLine(brawler_name);
+
+        target_node = findBrawler(node_head, brawler_name);
+
+        // test for whether brawler exists
+        if(target_node != ((struct node *) 0)) {
+          // brawler exists
+          printBrawler(target_node->brawler);
+        }
+        else {
+          printf("Brawler %s does not exist.\n", brawler_name);
+        }
+      }
+
+      all_brawlers = false;
+    }
+      break;
+    case 'U': {
+      if(all_brawlers) {
+        if(node_head != ((struct node *) 0)) {
+          printf("Total Power Points Required: %d.\n",
+                 sumBrawlers(node_head, powerPointsToLevel));
+          printf("Total Coins Required: %d.\n",
+                 sumBrawlers(node_head, coinsToLevel));
+        }
+        else {
+          printf("No Brawlers added.\n");
+        }
+      }
+      else {
+        char brawler_name[16];
+        struct node * target_node;
+
+        printf("Brawler's Name: ");
+        readLine(brawler_name);
+
+        target_node = findBrawler(node_head, brawler_name);
+
+        // test for whether brawler exists
+        if(target_node != ((struct node *) 0)) {
+          // brawler exists
+          printf("Power Points Required: %d.\n",
+                 powerPointsToLevel(target_node->brawler));
+          printf("Coins Required: %d.\n",
+                 coinsToLevel(target_node->brawler));
+        }
+        else {
+          // brawler does not exist
+          printf("%s does not exists.\n", brawler_name);
+        }
+      }
+
+      all_brawlers = false;
+    }
+      break;
+    case 'M': {
+      if(all_brawlers) {
+        if(node_head != ((struct node *) 0)) {
+          printf("Total Power Points to Max Required: %d.\n",
+                 sumBrawlers(node_head, powerPointsToMax));
+          printf("Total Coins to Max Required: %d.\n",
+                 sumBrawlers(node_head, coinsToMax));
+        }
+        else {
+          printf("No Brawlers added.\n");
+        }
+      }
+      else {
+        const char brawler_name[16];
+        struct node * target_node;
+
+        printf("Brawler's Name: ");
+        scanf("%s", brawler_name);
+
+        target_node = findBrawler(node_head, brawler_name);
+
+        // test for whether brawler exists
+        if(target_node != ((struct node *) 0)) {
+          // brawler exists
+          printf("Power Points Required to Max: %d.\n",
+                 powerPointsToMax(target_node->brawler));
+          printf("Coins Required to Max: %d.\n",
+                 coinsToMax(target_node->brawler));
+        }
+      }
+
+      all_brawlers = false;
+    }
+      break;
+    case 'E': {
+      // commit an action on ALL brawlers added
+      if(all_brawlers) {
+        printf("Option already selected.\n");
+      }
+      else {
+        all_brawlers = true;
+        printf("ALL BRAWLERS-MODE.\n");
+        printf("(The next action functions on ALL brawlers added.\n");
+      }
     }
       break;
     case 'S': {
-      // save brawler(s) and attribute(s) to file
-      if(writeBrawlers(node_head)) {
-        printf("Brawlers saved successfully.\n");
+      if(all_brawlers) {
+        printf("All brawler action not applicable.\n");
       }
       else {
-        printf("Error. Unable to save brawlers.\n");
+        // save brawler(s) and attribute(s) to file
+        if(writeBrawlers(node_head)) {
+          printf("Brawlers saved successfully.\n");
+        }
+        else {
+          printf("Error. Unable to save brawlers.\n");
+        }
       }
+
+      all_brawlers = false;
     }
       break;
     case 'L': {
-      // load brawler(s) and attribute(s) to list
-      if((node_head = readBrawlers(node_head))) {
-        printf("Brawlers successfully loaded.\n");
+      if(all_brawlers) {
+        printf("All brawler action not applicable.\n");
       }
       else {
-        printf("Brawlers unable to be loaded.\n");
+        // load brawler(s) and attribute(s) to list
+        if((node_head = readBrawlers(node_head))) {
+          printf("Brawlers successfully loaded.\n");
+        }
+        else {
+          printf("Brawlers unable to be loaded.\n");
+        }
       }
+
+      all_brawlers = false;
     }
     case '?': {
       printMenu();
+
+      all_brawlers = false;
     }
       break;
     case 'Q': {
@@ -105,6 +197,8 @@ int main(void) {
       break;
     default: {
       printf("Unknown option.\n");
+
+      all_brawlers = false;
     }
       break;
     }
@@ -354,33 +448,66 @@ bool reallocateMem(struct node * iter) {
   return true;
 }
 
-void printBrawlers(struct node * iter) {
+void printBrawler(struct brawler_t * brawler) {
   /**
    * printBrawlers displays all brawlers in the
    * list.
    *
-   * @param node_head: Pointer to beginning of list.
+   * @param brawler: Brawler to be printed.
    */
 
   // line break segment
   printf("--------------------\n");
 
-  if(iter == ((struct node *) 0)) {
-    printf("No brawlers added.\n");
-  }
-  else {
-    while(iter != ((struct node *) 0)) {
-      printf("Brawler: %s\n", iter->brawler->name);
-      printf("Power Level: %d\n", iter->brawler->power_level);
-      printf("Star Power(s): %d\n", iter->brawler->star_powers);
-      printf("Power Point(s): %d\n", iter->brawler->power_points);
-      printf("--------------------\n");
+  printf("Brawler: %s\n", brawler->name);
+  printf("Power Level: %d\n", brawler->power_level);
+  printf("Star Power(s): %d\n", brawler->star_powers);
+  printf("Power Point(s): %d\n", brawler->power_points);
+}
 
-      iter = iter->next;
-    }
+void printBrawlers(struct node * iter,
+                      void (* function) (struct brawler_t *)) {
+  /**
+   * printBrawlers traverses through the list of brawlers
+   * and acts on each brawler specified by the supplied function.
+   *
+   * @param iter: Pointer to first node.
+   * @param function: Function to apply to each brawler
+   */
+
+  // iterate through list
+  while(iter != NULL) {
+    function(iter->brawler);
+
+    // point to next node
+    iter = iter->next;
   }
 }
 
+int sumBrawlers(struct node * iter,
+                int (* function) (struct brawler_t *)) {
+  /**
+   * sumBrawlers traverses through the list of brawlers
+   * and acts on each brawler specified by the supplied function
+   * to sum an attribute.
+   *
+   * @param iter: Pointer to first node.
+   * @param function: Function to apply to each brawler.
+   * @return sum: Summation of an attribute of all brawlers.
+   */
+
+  int sum = 0;
+
+  // iterate through list
+  while(iter != NULL) {
+    sum += function(iter->brawler);
+
+    // point to next node
+    iter = iter->next;
+  }
+
+  return sum;
+}
 bool writeBrawlers(struct node * iter) {
   /**
    * writeBrawlers writes the brawlers and their
@@ -607,6 +734,7 @@ void printMenu(void) {
   printf("D: Display brawlers.\n");
   printf("U: Power Points & Coins required to next level.\n");
   printf("M: Power Points & Coins required to max level.\n");
+  printf("E: Select all brawlers for a single action.\n");
   printf("S: Save added brawlers to a file.\n");
   printf("L: Load brawlers from file.\n");
   printf("Q: Quit program.\n");
