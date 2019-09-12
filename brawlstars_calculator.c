@@ -41,9 +41,10 @@ int main(void) {
       // test for whether brawler exists
       if(target_node != ((struct node *) 0)) {
         // brawler exists
-        printf("%s found...\n", brawler_name);
         printf("Power Points Required: %d.\n",
                powerPointsToLevel(target_node->brawler));
+        printf("Coins Required: %d.\n",
+               coinsToLevel(target_node->brawler));
       }
       else {
         // brawler does not exist
@@ -63,9 +64,10 @@ int main(void) {
       // test for whether brawler exists
       if(target_node != ((struct node *) 0)) {
         // brawler exists
-        printf("%s found...\n", brawler_name);
         printf("Power Points Required to Max: %d.\n",
                powerPointsToMax(target_node->brawler));
+        printf("Coins Required to Max: %d.\n",
+               coinsToMax(target_node->brawler));
       }
     }
       break;
@@ -603,8 +605,8 @@ void printMenu(void) {
   printf("########################################\n");
   printf("A: Add a new brawler.\n");
   printf("D: Display brawlers.\n");
-  printf("U: Power Points required to next level.\n");
-  printf("M: Power Points required to max level.\n");
+  printf("U: Power Points & Coins required to next level.\n");
+  printf("M: Power Points & Coins required to max level.\n");
   printf("S: Save added brawlers to a file.\n");
   printf("L: Load brawlers from file.\n");
   printf("Q: Quit program.\n");

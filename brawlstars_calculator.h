@@ -1,6 +1,9 @@
 #ifndef BRAWLSTARS_CALC_H
 #define BRAWLSTARS_CALC_H
 
+#include <stdbool.h>
+
+/* power point constant(s) */
 #define PWR_PTS_LVL_1 0
 #define PWR_PTS_LVL_2 20
 #define PWR_PTS_LVL_3 30
@@ -12,7 +15,17 @@
 #define PWR_PTS_LVL_9 550
 #define PWR_PTS_LVL_10 0
 
-#include <stdbool.h>
+/* coin constant(s) */
+#define COINS_LVL_1 0
+#define COINS_LVL_2 20
+#define COINS_LVL_3 35
+#define COINS_LVL_4 75
+#define COINS_LVL_5 140
+#define COINS_LVL_6 290
+#define COINS_LVL_7 480
+#define COINS_LVL_8 800
+#define COINS_LVL_9 1250
+#define COINS_LVL_10 0
 
 /* structure definition(s) */
 struct brawler_t {
