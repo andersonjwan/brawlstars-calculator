@@ -233,30 +233,64 @@ struct brawler_t * createBrawler(struct brawler_t brawler) {
 struct brawler_t collectBrawlerInfo(void) {
   struct brawler_t brawler_info;
 
+  // default attribute(s)
+  strcpy(brawler_info.name, "blank");
+  brawler_info.power_level = 1;
+  brawler_info.star_powers = 0;
+  brawler_info.power_points = 0;
+
+  /* user supplied attribute(s) */
+
   // prompt user for brawler name
   printf("Brawler's Name: ");
   readLine(brawler_info.name);
 
   // prompt user for brawler power level
-  printf("%s's Power Level: ", brawler_info.name);
-  scanf("%d", &(brawler_info.power_level));
+  do {
+    printf("%s's Power Level: ", brawler_info.name);
+    scanf("%d", &(brawler_info.power_level));
+
+    // test for correct range of power level
+    if(brawler_info.power_level < 1 || brawler_info.power_level > 10) {
+      printf("Incorrect Power Level (Range: 1-10)\n");
+    }
+  }
+  while(brawler_info.power_level < 1 || brawler_info.power_level > 10);
 
   // prompt user for star power(s) if applicable
   if(brawler_info.power_level == 10) {
-    printf("%s's Star Power count: ", brawler_info.name);
-    scanf("%d", &(brawler_info.star_powers));
+    do {
+      printf("%s's Star Power count: ", brawler_info.name);
+      scanf("%d", &(brawler_info.star_powers));
 
-    // set power points to zero
-    brawler_info.power_points = 0;
+      // test for correct range of star power(s)
+      if(brawler_info.star_powers < 0 || brawler_info.star_powers > 2) {
+        printf("Incorrect Star Powers (Range: 0-2)\n");
+      }
+    }
+    while(brawler_info.star_powers < 0 || brawler_info.star_powers > 2);
   }
   else {
-    // not level 10 brawler
-    brawler_info.star_powers = 0;
+    // brawler not level 10, test for power points applicability
+
+    int poss_pwr_pts = powerPointsToMax(&brawler_info);
 
     // prompt brawler for power points to next level
     // this value can be higher than needed for the next level
-    printf("%s's Power Points: ", brawler_info.name);
-    scanf("%d", &(brawler_info.power_points));
+    if(brawler_info.power_level < 9) {
+      do {
+        printf("%s's Power Points: ", brawler_info.name);
+        scanf("%d", &(brawler_info.power_points));
+
+        // test for correct range of power point(s)
+        if(brawler_info.power_points < 0 ||
+           brawler_info.power_points > poss_pwr_pts) {
+          printf("Incorrect Power Points (Range: 0-%d)\n", poss_pwr_pts);
+        }
+      }
+      while(brawler_info.power_points < 0 ||
+            brawler_info.power_points > poss_pwr_pts);
+    }
   }
 
   return brawler_info;
