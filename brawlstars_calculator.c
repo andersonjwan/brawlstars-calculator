@@ -36,6 +36,39 @@ int main(void) {
       }
     }
       break;
+    case 'R': {
+      if(all_brawlers) {
+        printf("All brawler action not applicable.\n");
+      }
+      else {
+        if(node_head != ((struct node *) 0)) {
+          char brawler_name[16];
+
+          printf("Brawler to be removed: ");
+          readLine(brawler_name);
+
+          struct node * target_node = findBrawler(node_head, brawler_name);
+          struct node * return_node;
+
+          if(target_node != ((struct node *) 0)) {
+            return_node = removeNode(node_head, target_node->brawler);
+
+            if(return_node == ((struct node *) 0)) {
+              node_head = return_node;
+            }
+
+            printf("%s removed.\n", brawler_name);
+          }
+          else {
+            printf("%s does not exist.\n", brawler_name);
+          }
+        }
+        else {
+          printf("No brawlers added.\n");
+        }
+      }
+    }
+      break;
     case 'D': {
       // display brawler(s)
       if(all_brawlers) {
@@ -185,6 +218,7 @@ int main(void) {
 
       all_brawlers = false;
     }
+      break;
     case '?': {
       printMenu();
 
@@ -275,6 +309,66 @@ struct node * appendNode(struct node * iter, struct brawler_t new_brawler) {
   return new_node;
 }
 
+struct node * removeNode(struct node * iter, struct brawler_t * removed_brawler) {
+  /**
+   * removeNode removes a node from the list by the supplied
+   * brawler's name.
+   *
+   * @param iter: Pointer to first element.
+   * @param brawler: Brawler to remove.
+   * @return: Pointer to previous node.
+   */
+
+  // assumed: 1. at least one element exists in the list
+  //          2. supplied brawler in list
+
+  if(iter->next == ((struct node *) 0)) {
+    // single element, head of list
+
+    // re-allocate memory
+    free(iter->brawler);
+    free(iter);
+
+    iter = ((struct node *) 0); // reset to NULL
+  }
+  else {
+    // at least two element(s) exist
+
+    // iterate to brawler to be removed
+    while(iter->next->next != ((struct node *) 0)) {
+      if((strcmp(iter->next->brawler->name, removed_brawler->name) == 0)) {
+        break;
+      }
+
+      iter = iter->next;
+    }
+
+    // check if end node
+    if(iter->next->next == ((struct node *) 0)) {
+      // re-allocate brawler
+      free(iter->next->brawler);
+
+      // re-allocate node
+      free(iter->next);
+
+      // set previous node to NULL
+      iter->next = ((struct node *) 0);
+    }
+    else {
+      // node exists between two nodes
+      struct node * temp = iter->next;
+
+      // link previous to next
+      iter->next = iter->next->next;
+
+      // re-allocate brawler to be removed
+      free(temp->brawler);
+      free(temp);
+    }
+  }
+
+  return iter;
+}
 struct node * findBrawler(struct node * iter, const char target_name[]) {
   /**
    * findBrawler searches through the list linearly
@@ -731,6 +825,7 @@ void printMenu(void) {
 
   printf("########################################\n");
   printf("A: Add a new brawler.\n");
+  printf("R: Remove a brawler.\n");
   printf("D: Display brawlers.\n");
   printf("U: Power Points & Coins required to next level.\n");
   printf("M: Power Points & Coins required to max level.\n");
