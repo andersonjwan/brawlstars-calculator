@@ -20,7 +20,7 @@ int main(void) {
     switch(choice) {
     case 'A': {
       if(all_brawlers) {
-        printf("All brawler action not applicable.\n");
+        printf("Action not applicable to multiple brawlers.\n");
       }
       else {
         if(node_head == ((struct node *) 0)) {
@@ -38,7 +38,7 @@ int main(void) {
       break;
     case 'R': {
       if(all_brawlers) {
-        printf("All brawler action not applicable.\n");
+        printf("Action not applicable to multiple brawlers.\n");
       }
       else {
         if(node_head != ((struct node *) 0)) {
@@ -187,7 +187,7 @@ int main(void) {
       break;
     case 'S': {
       if(all_brawlers) {
-        printf("All brawler action not applicable.\n");
+        printf("Action not applicable to multiple brawlers.\n");
       }
       else {
         // save brawler(s) and attribute(s) to file
@@ -204,7 +204,7 @@ int main(void) {
       break;
     case 'L': {
       if(all_brawlers) {
-        printf("All brawler action not applicable.\n");
+        printf("Action not applicable to multiple brawlers.\n");
       }
       else {
         // load brawler(s) and attribute(s) to list
